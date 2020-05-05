@@ -1,0 +1,84 @@
+<b>다양한 함수에서 동일하게 사용한다고 무조건 전역변수로 선언하지 말것.</b>
+
+ex)
+
+```c++
+#include <iostream>
+#include <stack>
+#include<vector>
+#include <string.h>
+using namespace std;
+
+int check[10] = {0};
+vector <int> list[15];
+stack<int> st;
+
+//vector<int> :: iterator it;
+
+void dfs(int idx){
+   vector<int> :: iterator it; //반복자는 해당 함수 안에 생성하자.
+   //어차피 모든 함수에서 반복자 다 사용한다고 전역으로 선언하면,
+   //재귀 함수 사용시에 무조건 꼬인다.
+   
+  check[idx] = 1;
+  cout << "idx = " <<idx << endl;
+
+  for(it = list[idx].begin(); it != list[idx].end(); it++){
+    if(check[*it] == 0){
+      st.push(*it);
+      dfs(*it);
+    }
+  }
+}
+
+int main() {
+  
+  list[1].push_back(6);
+  list[6].push_back(1);
+
+  list[1].push_back(5);
+  list[5].push_back(1);
+
+  list[6].push_back(4);
+  list[4].push_back(6);
+
+  list[10].push_back(6);
+  list[6].push_back(10);
+
+  list[5].push_back(3);
+  list[3].push_back(5);
+
+  list[3].push_back(7);
+  list[7].push_back(3);
+
+  list[3].push_back(8);
+  list[8].push_back(3);
+
+  list[4].push_back(2);
+  list[2].push_back(4);
+
+  list[2].push_back(9);
+  list[9].push_back(2); 
+  st.push(1);
+  dfs(1); 
+  for(int i=0; i<st.size(); i++){
+    printf("#%d ", st.top());
+    st.pop();
+  }
+  return 0;
+}
+```
+다양한 함수에서 동일하게 사용한다고 무조건 전역변수로 선언하지 말것.
+
+```
+//vector<int> :: iterator it;
+```
+이렇게 전역 변수로 선언하지 말고,
+
+```
+void dfs(int idx){
+   vector<int> :: iterator it; ////////////////////
+```
+반복자는 해당 함수 안에 생성하자.
+어차피 모든 함수에서 반복자 다 사용한다고 전역으로 선언하면,
+재귀 함수 사용시에 무조건 꼬인다.
